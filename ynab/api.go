@@ -58,7 +58,8 @@ func (r ErrorResponse) Error() string {
 var DefaultBaseURL = "https://api.youneedabudget.com/v1/"
 
 func NewDefaultClient(accessToken string) *Client {
-	return NewClient(&url.URL{Path: DefaultBaseURL}, nil, accessToken)
+	baseUrl, _ := url.Parse(DefaultBaseURL)
+	return NewClient(baseUrl, nil, accessToken)
 }
 
 func NewClient(baseUrl *url.URL, httpClient *http.Client, accessToken string) *Client {
