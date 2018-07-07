@@ -8,6 +8,9 @@ import (
 	"io"
 	"bytes"
 	"fmt"
+	"context"
+
+	"golang.org/x/oauth2"
 )
 
 type Client struct {
@@ -24,6 +27,12 @@ type Client struct {
 	ScheduledTransactionsService *ScheduledTransactionsService
 	TransactionsService *TransactionsService
 	UserService *UserService
+}
+
+// Endpoint is YNAB's OAuth 2.0 endpoint.
+var Endpoint = oauth2.Endpoint{
+	AuthURL:  "https://app.youneedabudget.com/oauth/authorize",
+	TokenURL: "https://app.youneedabudget.com/oauth/token",
 }
 
 type service struct {
@@ -60,6 +69,13 @@ var DefaultBaseURL = "https://api.youneedabudget.com/v1/"
 func NewDefaultClient(accessToken string) *Client {
 	baseUrl, _ := url.Parse(DefaultBaseURL)
 	return NewClient(baseUrl, nil, accessToken)
+}
+
+func NewOAuthClient(oauthConfig *oauth2.Config, oauthToken *oauth2.Token) *Client {
+	httpClient := oauthConfig.Client(context.Background(), oauthToken)
+
+	baseUrl, _ := url.Parse(DefaultBaseURL)
+	return NewClient(baseUrl, httpClient, "")
 }
 
 func NewClient(baseUrl *url.URL, httpClient *http.Client, accessToken string) *Client {
@@ -111,7 +127,9 @@ func (yc Client) newRequest(method string, relUrl string, reqBody interface{}) (
 		req.Header.Set("Content-Type", "application/json")
 	}
 
-	req.Header.Add("Authorization", "Bearer " + yc.accessToken)
+	if (yc.accessToken != "") {
+		req.Header.Add("Authorization", "Bearer " + yc.accessToken)
+	}
 	req.Header.Set("Accept", "application/json")
 
 	return req, nil
