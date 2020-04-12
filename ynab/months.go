@@ -19,10 +19,10 @@ type MonthDetailWrapper struct {
 }
 
 type MonthSummary struct {
-	Month string `json:"month"`
-	Note *string `json:"note"`
-	ToBeBudgeted *int `json:"to_be_budgeted"`
-	AgeOfMoney *int `json:"age_of_money"`
+	Month        string  `json:"month"`
+	Note         *string `json:"note"`
+	ToBeBudgeted *int    `json:"to_be_budgeted"`
+	AgeOfMoney   *int    `json:"age_of_money"`
 }
 
 type MonthDetail struct {
@@ -35,7 +35,7 @@ https://api.youneedabudget.com/v1#/Months/getBudgetMonths
 */
 func (ms *MonthsService) List(budgetId string) ([]MonthSummary, error) {
 	var response MonthSummariesResponse
-	if err := service(*ms).do("GET", "budgets/" + budgetId + "/months", nil, &response); err != nil {
+	if err := service(*ms).do("GET", "budgets/"+budgetId+"/months", nil, &response); err != nil {
 		return nil, err
 	}
 	return response.Data.Months, nil
@@ -46,7 +46,7 @@ https://api.youneedabudget.com/v1#/Months/getBudgetMonth
 */
 func (ms *MonthsService) Get(budgetId string, month string) (MonthDetail, error) {
 	var response MonthDetailResponse
-	if err := service(*ms).do("GET", "budgets/" + budgetId + "/months/" + month, nil, &response); err != nil {
+	if err := service(*ms).do("GET", "budgets/"+budgetId+"/months/"+month, nil, &response); err != nil {
 		return MonthDetail{}, err
 	}
 	return response.Data.Month, nil

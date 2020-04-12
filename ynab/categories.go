@@ -67,8 +67,18 @@ func (cs *CategoriesService) Get(budgetId string, categoryId string) (Category, 
 	return response.Data.Category, nil
 }
 
+func (cs *CategoriesService) GetSince(budgetId string, categoryId string, month time.Time) (Category, error) {
+	monthStr := toString(month)
+
+	var response CategoryResponse
+	if err := service(*cs).do("GET", "budgets/"+budgetId+"/months/"+monthStr+"/categories/"+categoryId, nil, &response); err != nil {
+		return Category{}, err
+	}
+	return response.Data.Category, nil
+}
+
 func (cs *CategoriesService) Patch(budgetId string, month time.Time, categoryId string, category Category) (Category, error) {
-	monthStr := strings.Split(month.Format(time.RFC3339), "T")[0]
+	monthStr := toString(month)
 
 	var response CategoryResponse
 	err := service(*cs).do("PATCH", "budgets/"+budgetId+"/months/"+monthStr+"/categories/"+categoryId, category, &response)
@@ -76,4 +86,9 @@ func (cs *CategoriesService) Patch(budgetId string, month time.Time, categoryId 
 		return Category{}, err
 	}
 	return response.Data.Category, nil
+}
+
+func toString(month time.Time) string {
+	monthStr := strings.Split(month.Format(time.RFC3339), "T")[0]
+	return monthStr
 }

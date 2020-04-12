@@ -1,29 +1,29 @@
 package ynab
 
 import (
-	"net/http"
-	"io/ioutil"
-	"encoding/json"
-	"net/url"
-	"io"
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 )
 
 type Client struct {
-	BaseURL   *url.URL
-	client *http.Client
+	BaseURL     *url.URL
+	client      *http.Client
 	accessToken string
 
-	AccountsService *AccountsService
-	BudgetService *BudgetsService
-	CategoriesService *CategoriesService
-	MonthsService *MonthsService
-	PayeeLocationsService *PayeeLocationsService
-	PayeesService *PayeesService
+	AccountsService              *AccountsService
+	BudgetService                *BudgetsService
+	CategoriesService            *CategoriesService
+	MonthsService                *MonthsService
+	PayeeLocationsService        *PayeeLocationsService
+	PayeesService                *PayeesService
 	ScheduledTransactionsService *ScheduledTransactionsService
-	TransactionsService *TransactionsService
-	UserService *UserService
+	TransactionsService          *TransactionsService
+	UserService                  *UserService
 }
 
 type service struct {
@@ -39,13 +39,13 @@ func (s service) do(method string, url string, reqBody interface{}, respBody int
 }
 
 type ErrorResponse struct {
-	Response *http.Response
+	Response     *http.Response
 	ErrorDetails ApiError `json:"error"`
 }
 
 type ApiError struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
 	Detail string `json:"detail"`
 }
 
@@ -68,8 +68,8 @@ func NewClient(baseUrl *url.URL, httpClient *http.Client, accessToken string) *C
 	}
 
 	client := &Client{
-		BaseURL: baseUrl,
-		client: httpClient,
+		BaseURL:     baseUrl,
+		client:      httpClient,
 		accessToken: accessToken,
 	}
 
@@ -111,7 +111,7 @@ func (yc Client) newRequest(method string, relUrl string, reqBody interface{}) (
 		req.Header.Set("Content-Type", "application/json")
 	}
 
-	req.Header.Add("Authorization", "Bearer " + yc.accessToken)
+	req.Header.Add("Authorization", "Bearer "+yc.accessToken)
 	req.Header.Set("Accept", "application/json")
 
 	return req, nil
