@@ -79,9 +79,10 @@ func (cs *CategoriesService) GetSince(budgetId string, categoryId string, month 
 
 func (cs *CategoriesService) Patch(budgetId string, month time.Time, categoryId string, category Category) (Category, error) {
 	monthStr := toString(month)
+	categoryRequest := CategoryWrapper{Category: category}
 
 	var response CategoryResponse
-	err := service(*cs).do("PATCH", "budgets/"+budgetId+"/months/"+monthStr+"/categories/"+categoryId, category, &response)
+	err := service(*cs).do("PATCH", "budgets/"+budgetId+"/months/"+monthStr+"/categories/"+categoryId, categoryRequest, &response)
 	if err != nil {
 		return Category{}, err
 	}
