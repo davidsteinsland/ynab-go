@@ -115,7 +115,7 @@ func NewSaveTransaction(accountId string, date string, amount int) *SaveTransact
 
 func (ts *TransactionsService) list(budgetId string, sinceDate time.Time) ([]TransactionDetail, error) {
 	var response TransactionsResponse
-	if err := service(*ts).do("GET", "budgets/"+budgetId+"/transactions", nil, &response); err != nil {
+	if err := service(*ts).do("GET", "budgets/"+budgetId+"/transactions"+"?since_date="+sinceDate.Format("2016-12-30"), nil, &response); err != nil {
 		return nil, err
 	}
 	return response.Data.Transactions, nil
